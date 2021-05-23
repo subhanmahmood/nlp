@@ -4,11 +4,14 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import pandas as pd
 import pickle
+import nltk
 from csv import writer
 
 pd.set_option('display.max_colwidth', 1000)
 
 stop_words = pickle.load(open('stopwords', 'rb'))
+
+nltk.download('wordnet')
 
 wordnet_lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
