@@ -151,5 +151,3 @@ def test_invalid_body():
     res_body = res.json()
 
     assert res.url == url
-.pytest_cache/**
-_pycache__
