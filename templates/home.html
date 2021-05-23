@@ -42,6 +42,7 @@
                   <div id="error" class="alert alert-danger mb-0" role="alert">
                     Error: <span id="error-text" style="text-transform: capitalize;"></span>
                   </div>
+                  <p id="loading">Loading...</p>
                 </div>
               </div>
             </form>
@@ -56,14 +57,17 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
   <script>
+    $('#success').hide()
+    $('#error').hide()
+    $('#loading').hide()
     $(document).ready(function () {
-      $('#success').hide()
-      $('#error').hide()
+
 
       $('#btn-submit').click(function () {
+        $('#loading').show()
         $('#success').hide()
         $('#error').hide()
-        
+
         var singleData = {}
         $("#main-form").serializeArray().forEach((data, i) => {
           singleData[data.name] = data.value
@@ -79,10 +83,12 @@
           success: function (data) {
             console.log(data.genre)
             $('#success-text').text(data[0].genre)
+            $('#loading').hide()
             $('#success').show()
           },
           error: function (XMLHttpRequest, textStatus, errorThrown) {
             $('#error-text').text(XMLHttpRequest.responseJSON.msg)
+            $('#loading').hide()
             $('#error').show()
           },
           contentType: "application/json"
