@@ -99,56 +99,62 @@ def home():
 @app.route('/predict', methods=['POST'])
 def get_data():
     if request.method == 'POST':
-        content = request.get_json()
+        if(request.content_type == 'application/json'):
+            content = request.get_json()
 
-        if(type(content) == list):
+            if(type(content) == list):
 
-            if(len(content) > 0):
+                if(len(content) > 0):
 
-                title_present = True
-                plot_present = True
-
-                for item in content:
-                    if 'title' not in item:
-                        title_present = False
-                    if 'plot' not in item:
-                        plot_present = False
-                
-                if title_present and plot_present:
-                    
-                    valid_title = True
-                    valid_plot = True
+                    title_present = True
+                    plot_present = True
 
                     for item in content:
-                        if (type(item['title']) is not str):
-                            valid_title = False
-                        if (type(item['plot']) is not str):
-                            valid_title = False
-
-                    if valid_title and valid_plot:
-                        results = success(content)
-                        print(results)
-                        return jsonify(results)
-
-                    elif not valid_title:
-                        return jsonify({'msg': 'title is not str in at least one set of data'}), 406
-
-                    elif not valid_title:
-                        return jsonify({'msg': 'plot is not str in at least one set of data'}), 406
-
-                elif not title_present:
-                    return jsonify({'msg': 'title missing from at least one set of data'}), 406
-
-                elif not plot_present:
-                    return jsonify({'msg': 'plot missing from at least one set of data'}), 406
+                        if 'title' not in item:
+                            title_present = False
+                        if 'plot' not in item:
+                            plot_present = False
                     
+                    if title_present and plot_present:
+                        
+                        valid_title = True
+                        valid_plot = True
+
+                        for item in content:
+                            if (type(item['title']) is not str):
+                                valid_title = False
+                            if (type(item['plot']) is not str):
+                                valid_title = False
+
+                        if valid_title and valid_plot and len(item['title']) > 0 and len(item['plot']) > 0:
+                            results = success(content)
+                            print(results)
+                            return jsonify(results)
+
+                        elif not valid_title:
+                            return jsonify({'msg': 'title is not str in at least one set of data'}), 422
+
+                        elif not valid_title:
+                            return jsonify({'msg': 'plot is not str in at least one set of data'}), 422
+
+                        else:
+                            return jsonify({'msg': 'invalid input data'}), 422
+
+                    elif not title_present:
+                        return jsonify({'msg': 'title missing from at least one set of data'}), 422
+
+                    elif not plot_present:
+                        return jsonify({'msg': 'plot missing from at least one set of data'}), 422
+                        
+
+                else:
+                    return jsonify({'msg': 'invalid input'}), 422
 
             else:
-                return jsonify({'msg': 'invalid input'}), 406
-
+                return jsonify({'msg': 'invalid input'}), 422
+            #return results.to_json(orient ='records', lines= True)
         else:
-            return jsonify({'msg': 'invalid input'}), 406
-        #return results.to_json(orient ='records', lines= True)
+            return jsonify({'msg': 'invalid input'}), 400
 
 if __name__ == '__main__' :
     app.run(debug=True)

@@ -59,7 +59,27 @@ def test_invalid_body_missing_title():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
+    res_body = res.json()
+
+    assert res.url == url
+
+def test_invalid_content_type():
+
+    url = 'http://localhost:5000/predict'
+
+    headers = {'Content-Type': 'application/xml'}
+
+    payload = [
+        {
+            "title": "Night of the Wolf: Late Phases",
+            "plot": "When deadly beasts attack from the forest, it is up to a grizzled veteran to uncover what the residents of a secluded retirement community are hiding."
+        }
+    ]
+
+    res = requests.post(url, headers=headers, data=json.dumps(payload))
+
+    assert res.status_code == 400
     res_body = res.json()
 
     assert res.url == url
@@ -78,7 +98,7 @@ def test_invalid_body_missing_plot():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
     res_body = res.json()
 
     assert res.url == url
@@ -99,7 +119,7 @@ def test_invalid_body_invalid_title():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
     res_body = res.json()
 
     assert res.url == url
@@ -119,7 +139,7 @@ def test_invalid_body_invalid_title():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
     res_body = res.json()
 
     assert res.url == url
@@ -133,7 +153,7 @@ def test_invalid_body_empty():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
     res_body = res.json()
 
     assert res.url == url
@@ -147,7 +167,7 @@ def test_invalid_body():
 
     res = requests.post(url, headers=headers, data=json.dumps(payload))
 
-    assert res.status_code == 406
+    assert res.status_code == 422
     res_body = res.json()
 
     assert res.url == url
