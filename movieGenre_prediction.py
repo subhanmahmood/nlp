@@ -1,14 +1,14 @@
-from flask import Flask, Response, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from joblib import load
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import pandas as pd
-import pickle
 import nltk
 from csv import writer
 
 pd.set_option('display.max_colwidth', 1000)
 
+nltk.download('stopwords')
 stop_words = nltk.corpus.stopwords.words('english')
 
 wordnet_lemmatizer = WordNetLemmatizer()
@@ -99,62 +99,11 @@ def home():
 @app.route('/predict', methods=['POST'])
 def get_data():
     if request.method == 'POST':
-        if(request.content_type == 'application/json'):
-            content = request.get_json()
-
-            if(type(content) == list):
-
-                if(len(content) > 0):
-
-                    title_present = True
-                    plot_present = True
-
-                    for item in content:
-                        if 'title' not in item:
-                            title_present = False
-                        if 'plot' not in item:
-                            plot_present = False
-                    
-                    if title_present and plot_present:
-                        
-                        valid_title = True
-                        valid_plot = True
-
-                        for item in content:
-                            if (type(item['title']) is not str):
-                                valid_title = False
-                            if (type(item['plot']) is not str):
-                                valid_title = False
-
-                        if valid_title and valid_plot and len(item['title']) > 0 and len(item['plot']) > 0:
-                            results = success(content)
-                            print(results)
-                            return jsonify(results)
-
-                        elif not valid_title:
-                            return jsonify({'msg': 'title is not str in at least one set of data'}), 422
-
-                        elif not valid_title:
-                            return jsonify({'msg': 'plot is not str in at least one set of data'}), 422
-
-                        else:
-                            return jsonify({'msg': 'invalid input data'}), 422
-
-                    elif not title_present:
-                        return jsonify({'msg': 'title missing from at least one set of data'}), 422
-
-                    elif not plot_present:
-                        return jsonify({'msg': 'plot missing from at least one set of data'}), 422
-                        
-
-                else:
-                    return jsonify({'msg': 'invalid input'}), 422
-
-            else:
-                return jsonify({'msg': 'invalid input'}), 422
-            #return results.to_json(orient ='records', lines= True)
-        else:
-            return jsonify({'msg': 'invalid input'}), 400
+        content = request.get_json()
+        results = success(content)
+        print(results)
+        return jsonify(results)
+        #return results.to_json(orient ='records', lines= True)
 
 if __name__ == '__main__' :
     app.run(debug=True)
