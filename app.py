@@ -3,13 +3,12 @@ from joblib import load
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import pandas as pd
-import nltk
+import pickle
 from csv import writer
 
 pd.set_option('display.max_colwidth', 1000)
 
-nltk.download('stopwords')
-stop_words = nltk.corpus.stopwords.words('english')
+stop_words = pickle.load(open('stopwords', 'rb'))
 
 wordnet_lemmatizer = WordNetLemmatizer()
 stemmer = PorterStemmer()
